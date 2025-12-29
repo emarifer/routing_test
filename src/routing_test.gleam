@@ -2,7 +2,6 @@
 
 import gleam/dict.{type Dict}
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/result
 import gleam/uri.{type Uri}
@@ -65,7 +64,7 @@ type Route {
 
 fn parse_route(uri: Uri) -> Route {
   let path = result.unwrap(window.get_hash(), "/")
-  io.println(path)
+  // io.println(path)
 
   case path {
     "/" -> Index
@@ -144,17 +143,30 @@ fn update(model: Model, msg: Msg) -> #(Model, Effect(Msg)) {
 // VIEW ------------------------------------------------------------------------
 
 fn view(model: Model) -> Element(Msg) {
-  html.div([attribute.class("mx-auto max-w-2xl px-32")], [
-    html.nav([attribute.class("my-16 flex items-center justify-between")], [
-      html.h1([attribute.class("text-xl font-medium text-purple-600")], [
-        html.a([href(Index)], [html.text("My little Blog")]),
-      ]),
-      html.ul([attribute.class("flex space-x-8")], [
-        view_header_link(current: model.route, to: Posts, label: "Posts"),
-        view_header_link(current: model.route, to: About, label: "About"),
-      ]),
-    ]),
-    html.main([attribute.class("my-16")], {
+  html.div([attribute.class("mx-auto max-w-xs p-8 sm:max-w-2xl sm:px-32")], [
+    html.nav(
+      [attribute.class("my-8 flex items-baseline justify-between sm:my-16")],
+      [
+        html.h1(
+          [attribute.class("text-base font-medium text-purple-600 sm:text-xl")],
+          [
+            html.a([href(Index)], [html.text("My little Blog")]),
+          ],
+        ),
+        html.ul(
+          [
+            attribute.class(
+              "flex items-baseline space-x-4 text-sm sm:space-x-8 sm:text-base",
+            ),
+          ],
+          [
+            view_header_link(current: model.route, to: Posts, label: "Posts"),
+            view_header_link(current: model.route, to: About, label: "About"),
+          ],
+        ),
+      ],
+    ),
+    html.main([attribute.class("my-8 sm:my-16")], {
       // Just like we would show different HTML based on some other state in the
       // model, we can also pattern match on our Route value to show different
       // views based on the current page!
@@ -214,11 +226,21 @@ fn view_posts(model: Model) -> List(Element(msg)) {
     |> list.sort(fn(a, b) { int.compare(a.id, b.id) })
     |> list.map(fn(post) {
       html.article([attribute.class("mt-14")], [
-        html.h3([attribute.class("text-xl font-light text-purple-600")], [
-          html.a([attribute.class("hover:underline"), href(PostById(post.id))], [
-            html.text(post.title),
-          ]),
-        ]),
+        html.h3(
+          [
+            attribute.class(
+              "text-lg font-extralight text-purple-600 sm:text-xl sm:font-light",
+            ),
+          ],
+          [
+            html.a(
+              [attribute.class("hover:underline"), href(PostById(post.id))],
+              [
+                html.text(post.title),
+              ],
+            ),
+          ],
+        ),
         html.p([attribute.class("mt-1")], [html.text(post.summary)]),
       ])
     })
@@ -267,17 +289,26 @@ fn view_not_found() -> List(Element(msg)) {
 // VIEW HELPERS ----------------------------------------------------------------
 
 fn title(title: String) -> Element(msg) {
-  html.h2([attribute.class("text-3xl font-light text-purple-800")], [
+  html.h2([attribute.class("text-2xl font-light text-purple-800 sm:text-3xl")], [
     html.text(title),
   ])
 }
 
 fn leading(text: String) -> Element(msg) {
-  html.p([attribute.class("mt-8 text-lg")], [html.text(text)])
+  html.p(
+    [
+      attribute.class(
+        "mt-8 text-base font-extralight sm:text-lg sm:font-normal",
+      ),
+    ],
+    [html.text(text)],
+  )
 }
 
 fn paragraph(text: String) -> Element(msg) {
-  html.p([attribute.class("mt-14")], [html.text(text)])
+  html.p([attribute.class("mt-8 text-sm sm:mt-14 sm:text-base")], [
+    html.text(text),
+  ])
 }
 
 /// In other frameworks you might see special `<Link />` components that are
