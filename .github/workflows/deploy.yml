@@ -27,7 +27,7 @@ jobs:
         run: gleam deps download
       - name: Print Repository Name
         run: |
-            echo "REPO_NAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV && echo "${{ env.REPO_NAME }}"
+            echo ${{ github.repository }}
       - name: Add Repository Path
         run: |
           sed -i -e 's|Index -> "/"|Index -> "/routing_test/"|g' src/routing_test.gleam
