@@ -25,9 +25,12 @@ jobs:
           rebar3-version: "3"
       - name: Install dependencies
         run: gleam deps download
+      - name: Get Repository Name
+        run: |
+          REPO_NAME=$(echo ${{ github.repository }} | cut -d "/" -f 2) >> $GITHUB_ENV
       - name: Print Repository Name
         run: |
-            echo ${{ github.repository }}
+          echo "$REPO_NAME"
       - name: Add Repository Path
         run: |
           sed -i -e 's|Index -> "/"|Index -> "/routing_test/"|g' src/routing_test.gleam
