@@ -33,12 +33,12 @@ jobs:
           echo ${{ env.GITHUB_REPO_NAME }}
       - name: Add Repository Path
         run: |
-          sed -i -e 's|Index -> "/"|Index -> "/routing_test/"|g' src/routing_test.gleam
+          sed -i -e 's|Index -> "/"|Index -> "/${{ env.GITHUB_REPO_NAME }}/"|g' src/${{ env.GITHUB_REPO_NAME }}.gleam
       - name: Build app
-        run: gleam run -m lustre/dev build routing_test --minify --outdir=dist
+        run: gleam run -m lustre/dev build ${{ env.GITHUB_REPO_NAME }} --minify --outdir=dist
       - name: Fixing Links
         run: |
-          sed -i -e 's|href="/routing_test.css"|href="./routing_test.css"|g; s|src="/routing_test.js"|src="./routing_test.js"|g' dist/index.html
+          sed -i -e 's|href="/${{ env.GITHUB_REPO_NAME }}.css"|href="./${{ env.GITHUB_REPO_NAME }}.css"|g; s|src="/${{ env.GITHUB_REPO_NAME }}.js"|src="./${{ env.GITHUB_REPO_NAME }}.js"|g' dist/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
